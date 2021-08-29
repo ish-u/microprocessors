@@ -1,27 +1,27 @@
-; Perform BCD Addition on two 2 16-bit 
+; Perform BCD SUBTRACTION on two 2 16-bit 
 .MODEL TINY
 .486
 .CODE
 .STARTUP
-; Add the value in EBX and EDX. 
+; Subtract the value in EDX by EBX (EDX - EBX) 
 ; The Result will be stored in ECX
-MOV EBX, 12345678H  
 MOV EDX, 12345678H
+MOV EBX, 00000098H
 
-; Adding the bits 32-24 of EDX and EBX
-; Applying DAA (Decimal Adjust AL)
+; Subtracting the bits 32-24 of EDX and EBX
+; Applying DAS (Decimal Adjust AL after SUB)
 ; Moving the Result to CL
-ADD DL,BL
+SUB DL,BL
 MOV AL,DL
-DAA
+DAS
 MOV CL,AL
 
-; Adding the bits 24-16 of EDX and EBX (with carry)
-; Applying DAA (Decimal Adjust AL)
+; Subtracting the bits 24-16 of EDX and EBX (with borrow)
+; Applying DAS (Decimal Adjust AL after SUB)
 ; Moving the Result to CH
-ADC DH,BH
+SBB DH,BH
 MOV AL,DH
-DAA
+DAS
 MOV CH,AL
 
 ; Applying BSWAP to ECX to save the current Result
@@ -32,22 +32,21 @@ BSWAP ECX
 SHR EBX, 16
 SHR EDX, 16
 
-; Adding the bits 16-8 of EDX and EBX (with carry)
-; Applying DAA (Decimal Adjust AL)
+; Subtracting the bits 16-8 of EDX and EBX (with borrow)
+; Applying DAS (Decimal Adjust AL after SUB)
 ; Moving the Result to CH
-ADC DL,BL
+SBB DL,BL
 MOV AL,DL
-DAA
+DAS
 MOV CH,AL
 
-; Adding the bits 16-8 of EDX and EBX (with carry)
-; Applying DAA (Decimal Adjust AL)
+; Subtracting the bits 8-1 of EDX and EBX (with borrow)
+; Applying DAS (Decimal Adjust AL after SUB)
 ; Moving the Result to CL
-ADC DH,BH
+SBB DH,BH
 MOV CL,DH
 DAA
 MOV CH,AL
-
 
 ; Applying BSWAP to ECX 
 BSWAP ECX
@@ -55,3 +54,4 @@ BSWAP ECX
 END
 
 ; The Result of the Addition stored in ECX
+
